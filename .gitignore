@@ -1,0 +1,34 @@
+# Python environment
+venv/
+.venv/
+env/
+ENV/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyd
+
+# Model weights (auto-downloaded on demand)
+model/
+*.gguf
+*.safetensors
+*.bin
+*.pt
+*.pth
+
+# Generated outputs & audio
+outputs/
+*.wav
+*.mp3
+
+# Gradio cache & temporary files
+.gradio/
+.tmp/
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

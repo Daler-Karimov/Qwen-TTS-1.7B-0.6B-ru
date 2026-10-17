@@ -76,6 +76,27 @@ QWEN_TTS_EXE = BIN_DIR / "qwen-tts.exe"
 OUTPUTS_DIR = BASE_DIR / "outputs"
 OUTPUTS_DIR.mkdir(exist_ok=True, parents=True)
 
+def ensure_lfs_binaries():
+    """
+    Проверяет, не является ли файл bin/ggml-cuda.dll указателем Git LFS
+    (возникает, если пользователь скачал репозиторий через 'Download ZIP' на GitHub).
+    В случае обнаружения указателя автоматически загружает полный бинарный файл.
+    """
+    cuda_dll = BIN_DIR / "ggml-cuda.dll"
+    if cuda_dll.exists() and cuda_dll.stat().st_size < 100000:
+        print("[!] Обнаружен LFS-указатель вместо файла ggml-cuda.dll (ZIP-архив с GitHub).")
+        print("[+] Автоматическая загрузка оригинального бинарного файла ggml-cuda.dll (128 МБ)...")
+        import urllib.request
+        url = "https://media.githubusercontent.com/media/Daler-Karimov/Qwen-TTS/main/bin/ggml-cuda.dll"
+        try:
+            urllib.request.urlretrieve(url, str(cuda_dll))
+            print("[+] Файл ggml-cuda.dll успешно загружен и готов к работе!")
+        except Exception as e:
+            print(f"[!] Ошибка загрузки ggml-cuda.dll: {e}")
+
+ensure_lfs_binaries()
+
+
 MODEL_VARIANTS = {
     "1.7B - GGUF Q8_0 (~2.1 GB, Рекомендуется: быстро, высокое качество, поддержка эмоций)": {
         "desc": "8-битное квантование GGUF через нативный движок C++ с ускорением NVIDIA CUDA. Оптимальный баланс качества, скорости и поддержка эмоций.",

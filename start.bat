@@ -8,6 +8,20 @@ echo ===================================================
 echo             Starting Qwen3-TTS WebUI
 echo ===================================================
 
+if exist bin\ggml-cuda.dll (
+    for %%F in (bin\ggml-cuda.dll) do (
+        if %%~zF LSS 100000 (
+            echo [INFO] Detected Git LFS pointer in bin\ggml-cuda.dll ^(GitHub ZIP download^).
+            echo [INFO] Downloading full CUDA binary ^(128 MB^)...
+            curl.exe -L -# -o bin\ggml-cuda.dll "https://media.githubusercontent.com/media/Daler-Karimov/Qwen-TTS/main/bin/ggml-cuda.dll"
+            if errorlevel 1 (
+                echo [WARNING] curl failed, trying powershell...
+                powershell -Command "$ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest -Uri 'https://media.githubusercontent.com/media/Daler-Karimov/Qwen-TTS/main/bin/ggml-cuda.dll' -OutFile 'bin\ggml-cuda.dll'"
+            )
+        )
+    )
+)
+
 if exist venv\Scripts\python.exe goto :RUN
 
 echo [INFO] Virtual environment not found. Creating venv...
@@ -20,16 +34,6 @@ venv\Scripts\python.exe -m pip install --upgrade pip --quiet
 echo [INFO] Installing dependencies from requirements.txt...
 venv\Scripts\pip.exe install -r requirements.txt
 if errorlevel 1 goto :PIP_ERROR
-
-if exist bin\ggml-cuda.dll (
-    for %%F in (bin\ggml-cuda.dll) do (
-        if %%~zF LSS 100000 (
-            echo [INFO] Detected Git LFS pointer in bin\ggml-cuda.dll ^(GitHub ZIP download^).
-            echo [INFO] Downloading full binary ggml-cuda.dll ^(128 MB^)...
-            powershell -Command "Invoke-WebRequest -Uri 'https://media.githubusercontent.com/media/Daler-Karimov/Qwen-TTS/main/bin/ggml-cuda.dll' -OutFile 'bin\ggml-cuda.dll'"
-        )
-    )
-)
 
 :RUN
 echo [INFO] Using virtual environment: venv

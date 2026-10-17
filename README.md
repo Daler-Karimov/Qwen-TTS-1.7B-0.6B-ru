@@ -1,7 +1,6 @@
 # Qwen3-TTS WebUI
 
-English | [Русский](#русский)
-
+[Русский](#русский) | [English](#english)
 ---
 
 ## English

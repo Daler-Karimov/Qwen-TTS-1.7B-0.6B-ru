@@ -14,6 +14,9 @@ echo [INFO] Virtual environment not found. Creating venv...
 python -m venv venv
 if errorlevel 1 goto :VENV_ERROR
 
+echo [INFO] Updating pip...
+venv\Scripts\python.exe -m pip install --upgrade pip --quiet
+
 echo [INFO] Installing dependencies from requirements.txt...
 venv\Scripts\pip.exe install -r requirements.txt
 if errorlevel 1 goto :PIP_ERROR
